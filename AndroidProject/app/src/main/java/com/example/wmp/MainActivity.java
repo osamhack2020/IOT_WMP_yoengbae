@@ -37,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
             else
                 pendingIntent = PendingIntent.getActivity(this, 0, new Intent(this, MainActivity.class).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), 0);
 
+        //펜딩인텐트
         }
     }
 

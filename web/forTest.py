@@ -17,26 +17,27 @@ class userState(db.Model):
     state = db.Column(db.Integer)
     def __repr__(self):
         return '<User %r>' % self.username
-    def __init__(self, _username, _state):
-        self.username = _username
-        self.state = _state
-
-#불러올 때
-#userState.query.all()
-#Model 클래스 참고
+    def __init__(self, username, state):
+        self.username = username
+        self.state = state
 
 @app.route('/', methods=['GET', 'POST'])
 def home():
     if request.method == 'GET':
         return render_template('home.html')
     else:
-        mid = request.form['id']
-        mpw = request.form['pw']
-        return mid+mpw
-        #여기다 state 갈 수 있게
-        # return render_template('viewState.html')
+        if userState.query.filter_by(username=request.form['id']).first() is None:
+            return "없는사람"
+        else:
+            tmpuser = userState.query.filter_by(username=request.form['id']).first()
+            if tmpuser.userState == 1:
+                tmpuser = 0
+                print("불출했습니다")
+            else:
+                tmpuser = 1
+                print("반납되었습니다")
 
-#세션으로 찾아야
+#세션으로 찾아야?
 @app.route('/viewState')
 def viewState():
     data = userState.query.all()
@@ -48,7 +49,7 @@ def viewState():
 def register():
     #db에 데이터 추가
     if request.method == 'POST':
-        temp = userState(_username=request.form['regisername'], _state=0)
+        temp = userState(username=request.form['regisername'], state=0)
         db.session.add(temp)
         db.session.commit()
         return render_template('home.html')
@@ -56,14 +57,12 @@ def register():
         return render_template('register.html')
 
 if __name__ == '__main__':
-    app.run()
+    db.create_all()
+    app.run(host='0.0.0.0')
 
 
 #note :
-#######깃허브 업로드하기
 #3. db에서 삭제
-#4.안드로이드 HTTP, 
+#4.안드로이드 HTTP, 해싱
 #4.5 어플 제작 - 가입 / 현황보기 / 불출반납 인터페이스
 #5. 현황을 웹페이지에 반영해 띄워주기 + 어플에서 잘 읽을 수 있게
-#A 유저네임을 고유한 값 해싱해서 데이터베이스에 저장
-#?? NFC 어케활용할까? 반납함의 태그를 찍는 것으로 특정? 태그를 실시간 변화하게?? 자동생성된 QR코드??

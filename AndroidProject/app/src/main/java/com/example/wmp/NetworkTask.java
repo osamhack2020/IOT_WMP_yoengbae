@@ -12,7 +12,7 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
 
-public class NetworkTask extends AsyncTask<Void, Void, String> {
+private class NetworkTask extends AsyncTask<Void, Void, String> {
 
     private String url;
     private ContentValues values;
@@ -24,7 +24,7 @@ public class NetworkTask extends AsyncTask<Void, Void, String> {
     }
 
     @Override
-    public String doInBackground(Void... params) {
+    protected String doInBackground(Void... params) {
         String result;
         try{
             URL _url = new URL(url);
@@ -33,6 +33,11 @@ public class NetworkTask extends AsyncTask<Void, Void, String> {
             result = null;
         }
         return result;
+    }
+
+    @Override
+    protected void onPostExecute(String s){
+        super.onPostExecute(s);
     }
 
     private String showResult(URL __url) throws IOException {

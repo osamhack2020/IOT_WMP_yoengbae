@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Now</title>
+    </head>
+    <body>
+        {% for obj in data_list %}
+        <ul>
+            <li>{{obj.username}}</li>
+            <li>{{obj.state}}</li>
+            <li>{{obj.password}}</li>
+        </ul>
+        {% endfor %}
+    </body>
+</html>

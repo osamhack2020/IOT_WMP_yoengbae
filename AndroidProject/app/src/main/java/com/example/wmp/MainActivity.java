@@ -9,9 +9,12 @@ import android.nfc.Tag;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.TextView;
+import android.widget.EditText;
+import android.widget.CheckBox;
 import android.widget.Toast;
 import android.content.ContentValues;
 import android.os.AsyncTask;
+import android.provider.Settings.Secure;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -27,6 +30,8 @@ import androidx.core.content.ContextCompat;
 public class MainActivity extends AppCompatActivity {
 
     private TextView output;
+    private EditText number;
+    private CheckBox checkBox;
     private NfcAdapter adapter;
     private PendingIntent pendingIntent;
 
@@ -35,6 +40,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         output = (TextView) findViewById(R.id.output);
+        number = (EditText) findViewById(R.id.number);
+        checkBox = (checkBox) findViewById(R.id.check);
 
         adapter = NfcAdapter.getDefaultAdapter(this);
         if (adapter == null) {
@@ -67,13 +74,16 @@ public class MainActivity extends AppCompatActivity {
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         Tag myTag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
-        String id = byteArrayToHexString(myTag.getId());
-        //output.setText(id);
+        String tagID = byteArrayToHexString(myTag.getId());//NFC tag ID
 
         //url, parameter
-        String url = "127.0.0.1:5000";
-        NetworkTask task = new NetworkTask(url, null);
-        task.execute();
+        String myUrl = "http://172.16.5.4:5550/";
+        if (checkBox.isChecked()) {
+            myUrl = myUrl + "register";
+        }
+        String user = "name=" + Secure.getString(context.contentResolver, Secure.ANDROID_ID) + tagID + "&pw=" + number.getText();
+        NetworkTask task = new NetworkTask(myUrl);
+        task.execute(user);
     }
 
     String byteArrayToHexString(byte[] a) {
@@ -83,23 +93,21 @@ public class MainActivity extends AppCompatActivity {
         return sb.toString();
     }
 
-    private class NetworkTask extends AsyncTask<Void, Void, String> {
+    private class NetworkTask extends AsyncTask<String, Void, String> {
 
         private String url;
-        private ContentValues values;
 
-        public NetworkTask(String url, ContentValues values) {
+        public NetworkTask(String url) {
             super();
             this.url = url;
-            this.values = values;
         }
 
         @Override
-        protected String doInBackground(Void... params) {
+        protected String doInBackground(String... params) {
             String result;
             try{
                 URL _url = new URL(url);
-                result = showResult(_url);
+                result = showResult(_url, params[0]);
             } catch(Exception e){
                 result = null;
             }
@@ -112,13 +120,12 @@ public class MainActivity extends AppCompatActivity {
             output.setText(s);
         }
 
-        private String showResult(URL __url) throws IOException {
+        private String showResult(URL __url, String para) throws IOException {
             InputStream stream = null;
             OutputStream os = null;
             HttpURLConnection connection = null;
 
             String _result;
-            String strParams = "regisername=tempString";
             try {
                 connection = (HttpURLConnection) __url.openConnection();
                 connection.setRequestMethod("POST");
@@ -128,7 +135,7 @@ public class MainActivity extends AppCompatActivity {
                 //Transmit data by writing to the stream
                 os = connection.getOutputStream();
                 if(os != null){
-                    os.write(strParams.getBytes(StandardCharsets.UTF_8));
+                    os.write(para.getBytes(StandardCharsets.UTF_8));
                     os.flush();
                 }
 

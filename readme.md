@@ -14,7 +14,7 @@ Where's My Phone. 휴대전화 현황을 조회, 관리할 수 있는 서비스�
 
 ## 설치 안내 (Installation Process)
 ```bash
-$ git clone git주소
+$ git clone https://github.com/osamhack2020/IOT_WMP_yoengbae.git
 $ yarn or npm install
 $ yarn start or npm run start
 ```

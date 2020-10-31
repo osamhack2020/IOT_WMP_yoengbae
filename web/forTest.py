@@ -28,10 +28,13 @@ def home():
     if request.method == 'GET':
         return render_template('home.html')
     else:
-        if userState.query.filter_by(username=request.form['name']).first() is None:
+        if userState.query.filter_by(password=request.form['pw']).first().state == 1:
+            userState.query.filter_by(password=request.form['pw']).first().state = 0
+            return "불출"
+        tmpuser = userState.query.filter_by(username=request.form['name']).first()
+        if tmpuser is None:
             return "없는사람"
         else:
-            tmpuser = userState.query.filter_by(username=request.form['name']).first()
             if tmpuser.state == 1:
                 tmpuser.state = 0
                 db.session.commit()

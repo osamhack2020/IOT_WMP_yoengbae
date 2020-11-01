@@ -6,21 +6,24 @@ Where's My Phone. 휴대전화 현황을 조회, 관리할 수 있는 서비스�
 * Android API Level 10 이상
 
 ## 기술 스택
- - python 3.5.3
- - flask 1.1.2 
- - SQLite 3.16.2
+ - python
+ - flask
+ - SQLite
  - Flask-SQLAlchemy (DB ORM)
   
 
 ## 설치 안내 (Installation Process)
 ```bash
 $ git clone https://github.com/osamhack2020/IOT_WMP_yoengbae.git
-$ yarn or npm install
-$ yarn start or npm run start
+$ pip install flask
+$ pip install Flask-SQLAlchemy
+$ python3 경로/IOT_WMP_yoengbae/web/forTest.py
 ```
 
 ## 프로젝트 사용법 (Getting Started)
-**마크다운 문법을 이용하여 자유롭게 기재**
+1. 어플 실행 후 NFC 태그를 인식
+2. 태그와 단말기의 정보가 서버로 전송, 휴대전화 반납 처리
+3. 휴대전화 불출 시 지정한 비밀번호를 입력 시 불출 처리
 
  
 ## 팀 정보 (Team Information)
